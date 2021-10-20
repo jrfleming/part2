@@ -2,11 +2,27 @@ t_main : main
 s_lparen : (
 s_rparen : )
 t_begin : begin
+t_if: if
 t_output : output
 s_lparen : (
 t_str : hello world
 s_rparen : )
 s_semi : ;
+t_while : while
+s_lparen: (
+r_paren : )
+t_loop : loop
+t_end : end
+t_loop : loop
+t_id : id
+s_assign : =
+t_string : "hello"
+s_semi : ;
+t_output : output
+s_lparen : (
+t_string: "world"
+s_rparen : )
 t_end : end
 t_main : main
 s_semi : ;
+

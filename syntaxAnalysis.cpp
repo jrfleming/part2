@@ -174,7 +174,7 @@ bool SyntaxAnalyzer::stmtlist() {
 	}
 	if (result == 0)
 		return false;
-	else
+	else 
 		return true;
 }
 int SyntaxAnalyzer::stmt() {
@@ -209,7 +209,7 @@ int SyntaxAnalyzer::stmt() {
 }
 
 bool SyntaxAnalyzer::ifstmt() {
-	if(*tokitr == "s_lparen")
+	if (*tokitr == "s_lparen")
 		tokitr++; lexitr++;
 	if (expr()) {
 		if (*tokitr == "s_rparen") {
@@ -247,15 +247,51 @@ bool SyntaxAnalyzer::elsepart() {
 }
 
 bool SyntaxAnalyzer::whilestmt() {
+	if (*tokitr == "t_while"){
+		*tokitr++; lexitr++;
+		if (*tokitr == "s_lparen") {
+			*tokitr++; lexitr++;
+			if (expr()) {
+				if (*tokitr++ == "r_paren") {
+					*tokitr++; lexitr++;
+					if (*tokitr == "t_loop") {
+						if (stmtlist()) {
+							if (*tokitr == "t_end") {
+								*tokitr++; lexitr++;
+								if (*tokitr == "t_loop") {
+									tokitr++; lexitr++;
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			
+		}
+			
+	}
+	
 	return true;
 	// write this function
 }
 
 bool SyntaxAnalyzer::assignstmt() {
+	if (*tokitr == "t_id") {
+		*tokitr++; lexitr++;
+		if (*tokitr == "s_assign") {
+			*tokitr++; lexitr++;
+			if (expr())
+				return true;
+		}
+	}
+
 	return true;
 	// write this function
 }
 bool SyntaxAnalyzer::inputstmt() {
+	
 	if (*tokitr == "s_lparen") {
 		tokitr++; lexitr++;
 		if (*tokitr == "t_id") {
@@ -270,10 +306,28 @@ bool SyntaxAnalyzer::inputstmt() {
 }
 
 bool SyntaxAnalyzer::outputstmt() {
+	if (*tokitr == "t_output") {
+		tokitr++; lexitr++;
+		if (*tokitr == "s_lparen") {
+			*tokitr++; lexitr++;
+			if (expr()) {
+				if (*tokitr++ == "r_paren") {
+					*tokitr++; lexitr++;
+					return true;
+				}
+			}
+			else if (*tokitr == "t_string") {
+					if (*tokitr++ == "r_paren") {
+						*tokitr++; lexitr++;
+						return true;
+					}
+			}
+		}
+	
+	}
+	
 	return true;
-	// write this function
 }
-
 bool SyntaxAnalyzer::expr() {
 	if (simpleexpr()) {
 		if (logicop()) {
@@ -291,6 +345,17 @@ bool SyntaxAnalyzer::expr() {
 }
 
 bool SyntaxAnalyzer::simpleexpr() {
+	if (term()) {
+		if (logicop()) {
+			return true;
+		}
+		
+		else if (relop()) {
+			return true;
+		}
+	
+	}
+	
 	return true;
 	// write this function
 }
@@ -345,7 +410,7 @@ bool SyntaxAnalyzer::relop() {
 
 
 int main() {
-	ifstream infile("lexemes.txt");
+	ifstream infile("test1.txt");
 	SyntaxAnalyzer sa(infile);
 	sa.parse();
 	return 1;
